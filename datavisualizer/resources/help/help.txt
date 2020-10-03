@@ -1,0 +1,278 @@
+
+
+The help.txt contains english and russian explanations for better understanding.
+Файл help.txt содержит английские и русские объяснения для лучшего понимания.
+
+
+For more info check the source code:
+Больше информации в исходном коде:
+/datavisualizer/widgets/matplotlib_plots/custom_mpl.py
+/datavisualizer/widgets/pytqgraph_plots/custom_pyqtgraph.py
+
+
+The usage of the source code:
+
+The application makes it easy to understand, what to do with your data to make visualizations.
+User may copy and use:
+- the data(selected cells) from Graphics Menus as lists of [[X], [Y], [Z]]
+- the classes from the source code
+Thus, these features allow you to recreate any visualization from this application.
+
+3D:
+The 1st type means that you have one 2D array (1D and 1D meshgrids) and one 1D array.
+The 2nd type means that you have three 1D arrays.
+That is why 3D are not the same for the 1st and the 2nd data types.
+
+
+Использование исходных скриптов:
+
+Приложение позволяет понять, как именно и какие данные пользователь хочет отобразить.
+Пользователь может скопировать:
+- данные(выделенные ячейки) из Графических меню в виде списков для осей [[X], [Y], [Z]]
+- нужные классы из исходного кода
+Таким образом, можно воспроизвести нужные части в своих отдельных скриптах.
+
+3D:
+Первый тип означает представление данных в качестве 2D массива (сетки из 1D и 1D) и одного 1D массива.
+Второй тип означает представление данных в качестве трех 1D массивов.
+Именно поэтому отображения не являются одинаковыми при использовании 1 или 2 типа.
+
+
+
+Overall structure:
+
+The structure of the list with the axis values:
+(the list called each_graphics_instance.list_of_lists_of_values_to_show)
+
+
+[  # list_of_lists_of_values_to_show contains of 3 axis lists:
+    [  # axis X with values as lists:
+        [list_of_xs_with_index_0],  # values depend on type of creation
+        [list_of_xs_with_index_1],
+        [etc], [etc]  # number of axis X lists is the same as number of lists of Y and Z
+    ],
+    [  # axis Y with values as lists:
+        [list_of_ys_with_index_0],  # has the same len as list_of_xs_with_index_0
+        [list_of_ys_with_index_1],  # has the same len as list_of_xs_with_index_1
+        [etc], [etc]
+    ],
+    [  # axis Z with values as lists:
+        [list_of_zs_with_index_0],  # has the same len as list_of_xs_with_index_0
+        [list_of_zs_with_index_1],  # has the same len as list_of_xs_with_index_1
+        [etc], [etc]
+    ]  # for better understanding I've made visual section of actual values:
+]  # actual values of each list are shown in options of each graphics menu instance
+
+
+
+Общая структура:
+
+Структура списка со значениями всех осей:
+(Полное название списка each_graphics_instance.list_of_lists_of_values_to_show)
+
+
+[  # список списков значений для отображения содержит 3 списка для каждой оси:
+    [  # ось X со значениями в качестве списков:
+        [список с индексом_0 значений оси Х],  # значения зависят от типа создания
+        [список с индексом_1 значений оси Х],
+        [и.т.д.], [и.т.д.]  # кол-во списков для оси Х совпадает с количеством списков осей Y и Z
+    ],
+    [  # ось Y со значениями в качестве списков:
+        [список с индексом_0 значений оси Y],  # кол-во эл-тов, что и в списке оси Х с индексом_0
+        [список с индексом_1 значений оси Y],  # кол-во эл-тов, что и в списке оси Х с индексом_1
+        [и.т.д.], [и.т.д.]
+    ],
+    [  # ось Z со значениями в качестве списков:
+        [список с индексом_0 значений оси Z],  # кол-во эл-тов, что и в списке оси Х с индексом_0
+        [список с индексом_1 значений оси Z],  # кол-во эл-тов, что и в списке оси Х с индексом_1
+        [и.т.д.], [и.т.д.]
+    ]  # для лучшего понимания я сделал визуальное отображения ячеек:
+]  # значения списков отображаются при нажатии на контекстное меню "настройки" у графических меню
+
+
+
+
+
+
+There are examples of the usage:
+Примеры использования:
+
+
+Matplotlib
+
+
+1. MPL2DPlot (The simpliest MPL 2D plot)
+
+for i, v in enumerate(each_graphics_instance.list_of_lists_of_values_to_show[0]):
+    if i == 0:
+        ax.plot(
+            each_graphics_instance.list_of_lists_of_values_to_show[0][i],
+            each_graphics_instance.list_of_lists_of_values_to_show[1][i],
+        )
+
+
+2. MPLScatterFirstType
+
+for i, v in enumerate(each_graphics_instance.list_of_lists_of_values_to_show[0]):
+    if i == 0:
+        current_list_of_lists_of_x_axis = np.array(
+            each_graphics_instance.list_of_lists_of_values_to_show[0]).T.tolist()
+        current_list_of_lists_of_z_axis = np.array(
+            each_graphics_instance.list_of_lists_of_values_to_show[2]).T.tolist()
+        meshgrid_x, meshgrid_y = np.meshgrid(
+            np.array(current_list_of_lists_of_x_axis[0]),
+            np.array(
+                each_graphics_instance.list_of_lists_of_values_to_show[1][0])
+        )
+        np_2d_array = np.array(
+            current_list_of_lists_of_z_axis)
+        ax.scatter(
+            meshgrid_x,
+            meshgrid_y,
+            np_2d_array,
+        )
+
+
+3. MPLScatterSecondType
+
+for i, v in enumerate(each_graphics_instance.list_of_lists_of_values_to_show[0]):
+    if i == 0:
+        self.ax.scatter(
+            each_graphics_instance.list_of_lists_of_values_to_show[0][i],
+            each_graphics_instance.list_of_lists_of_values_to_show[1][i],
+            each_graphics_instance.list_of_lists_of_values_to_show[2][i],
+        )
+
+
+4. MPLSurfaceFirstType
+
+for i, v in enumerate(each_graphics_instance.list_of_lists_of_values_to_show[0]):
+    if i == 0:
+        current_list_of_lists_of_x_axis = np.array(
+            each_graphics_instance.list_of_lists_of_values_to_show[0]).T.tolist()
+        current_list_of_lists_of_z_axis = np.array(
+            each_graphics_instance.list_of_lists_of_values_to_show[2]).T.tolist()
+        meshgrid_x, meshgrid_y = np.meshgrid(
+            np.array(current_list_of_lists_of_x_axis[0]),
+            np.array(
+                each_graphics_instance.list_of_lists_of_values_to_show[1][0])
+        )
+        np_2d_array = np.array(
+            current_list_of_lists_of_z_axis)
+        surf = ax.plot_surface(
+            meshgrid_x,
+            meshgrid_y,
+            np_2d_array,
+        )
+
+
+5. MPLSurfaceSecondType
+
+for i, v in enumerate(each_graphics_instance.list_of_lists_of_values_to_show[0]):
+    if i == 0:
+        np_2d_array = np.array(
+            [each_graphics_instance.list_of_lists_of_values_to_show[2][0],
+                each_graphics_instance.list_of_lists_of_values_to_show[2][0]]
+        )
+        surf = ax.plot_surface(
+            each_graphics_instance.list_of_lists_of_values_to_show[0][0],
+            each_graphics_instance.list_of_lists_of_values_to_show[1][0],
+            np_2d_array,
+        )
+
+
+
+6. MPLWireframeFirstType
+
+for i, v in enumerate(each_graphics_instance.list_of_lists_of_values_to_show[0]):
+    if i == 0:
+        current_list_of_lists_of_x_axis = np.array(
+            each_graphics_instance.list_of_lists_of_values_to_show[0]).T.tolist()
+        current_list_of_lists_of_z_axis = np.array(
+            each_graphics_instance.list_of_lists_of_values_to_show[2]).T.tolist()
+        meshgrid_x, meshgrid_y = np.meshgrid(
+            np.array(current_list_of_lists_of_x_axis[0]),
+            np.array(
+                each_graphics_instance.list_of_lists_of_values_to_show[1][0])
+        )
+        np_2d_array = np.array(
+            current_list_of_lists_of_z_axis)
+        ax.plot_wireframe(
+            meshgrid_x,
+            meshgrid_y,
+            np_2d_array,
+        )
+
+
+7. MPLWireframeSecondType
+
+for i, v in enumerate(each_graphics_instance.list_of_lists_of_values_to_show[0]):
+    if i == 0:
+        np_2d_array = np.array(
+            [each_graphics_instance.list_of_lists_of_values_to_show[2][0],
+                each_graphics_instance.list_of_lists_of_values_to_show[2][0]]
+        )
+        ax.plot_wireframe(
+            each_graphics_instance.list_of_lists_of_values_to_show[0][0],
+            each_graphics_instance.list_of_lists_of_values_to_show[1][0],
+            np_2d_array,
+        )
+
+
+
+Pyqtgraph
+
+
+1. PyqtgraphSimplePlot
+
+self.plot = pg.GraphicsLayoutWidget()
+self.layout = QtGui.QGridLayout(self)
+self.layout.addWidget(self.plot, 1, 0)
+self.first_plot = self.plot.addPlot(row=1, col=0)
+self.first_plot.setMenuEnabled(False)
+
+for i, v in enumerate(each_graphics_instance.list_of_lists_of_values_to_show[0]):
+    curve = self.first_plot.plot(  
+        x=each_graphics_instance.list_of_lists_of_values_to_show[0][i],
+        y=each_graphics_instance.list_of_lists_of_values_to_show[1][i],
+        pen=pg.mkPen(
+            each_graphics_instance.color, width=2),
+        symbolBrush=each_graphics_instance.color,
+        symbolPen=each_graphics_instance.color,
+        symbol='o', clickable=False
+    )
+
+
+2. PyqtgraphAdvancedPlot
+
+for i, v in enumerate(each_graphics_instance.list_of_lists_of_values_to_show[0]):
+    curve = self.first_plot.plot(
+        x=each_graphics_instance.list_of_lists_of_values_to_show[0][i],
+        y=each_graphics_instance.list_of_lists_of_values_to_show[1][i],
+        pen=pg.mkPen(
+            each_graphics_instance.color, width=2),
+        clickable=True,
+    )
+
+
+
+
+
+For more info check the source code:
+Больше информации в исходном коде:
+
+/datavisualizer/widgets/matplotlib_plots/custom_mpl.py
+/datavisualizer/widgets/pytqgraph_plots/custom_pyqtgraph.py
+
+
+
+
+
+
+
+
+
+
+
+
+

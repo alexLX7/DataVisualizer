@@ -1,0 +1,7 @@
+{
+    "host":"",
+    "database":"",
+    "user":"postgres",
+    "password":"",
+    "custom_select":"SELECT table_name FROM information_schema.columns where table_schema='public'"
+}
